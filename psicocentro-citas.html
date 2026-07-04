@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Psicocentro — Agenda tu cita</title>
+<style>
+  :root{
+    --blanco:#FFFFFF;
+    --verde:#1F6E52;        /* verde principal, sereno y profesional */
+    --verde-oscuro:#14503B; /* para hover/estados */
+    --verde-suave:#EAF4EF;  /* fondos suaves */
+    --texto:#173A2C;        /* texto principal, verde muy oscuro */
+    --gris-texto:#5E7268;   /* texto secundario */
+    --borde:#D8E6DF;
+    --radio:18px;
+    --sombra:0 1px 3px rgba(20,80,59,.06), 0 8px 24px rgba(20,80,59,.06);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation:none!important;transition:none!important;}
+  }
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,sans-serif;
+    background:var(--verde-suave);
+    color:var(--texto);
+    font-size:17px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:480px;margin:0 auto;min-height:100dvh;
+    background:var(--blanco);
+    padding:0 20px 130px;position:relative;
+  }
+  @media(min-width:520px){
+    .app{margin:24px auto;min-height:auto;border-radius:28px;box-shadow:var(--sombra);overflow:hidden;}
+  }
+
+  /* Banda superior serena (identidad) */
+  .banda{
+    height:8px;margin:0 -20px;
+    background:linear-gradient(90deg, var(--verde-oscuro), var(--verde) 45%, #7FB8A0);
+  }
+
+  /* ---- Encabezado ---- */
+  header{text-align:center;padding:36px 0 8px;}
+  .logo{
+    width:76px;height:76px;margin:0 auto 16px;
+    background:var(--verde);color:var(--blanco);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:38px;
+  }
+  h1{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--verde-oscuro);}
+  .lema{color:var(--gris-texto);margin-top:6px;font-size:16px;}
+  .fecha-hoy{
+    display:inline-block;margin-top:14px;
+    background:var(--verde-suave);color:var(--verde-oscuro);
+    font-size:14px;font-weight:600;padding:8px 16px;border-radius:99px;
+  }
+
+  /* ---- Pasos ---- */
+  .paso{padding:30px 0 4px;}
+  .paso-titulo{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:700;margin-bottom:18px;}
+  .paso-num{
+    width:32px;height:32px;flex:none;border-radius:50%;
+    background:var(--verde-suave);color:var(--verde);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:700;
+    transition:background .25s,color .25s;
+  }
+  .paso.listo .paso-num{background:var(--verde);color:var(--blanco);}
+
+  /* ---- Servicios ---- */
+  .servicios{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .servicio{
+    background:var(--blanco);border:2px solid var(--borde);border-radius:var(--radio);
+    padding:22px 12px 18px;
+    font-family:inherit;font-size:16px;font-weight:600;color:var(--texto);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    cursor:pointer;min-height:118px;text-align:center;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .servicio .icono{font-size:34px;line-height:1;}
+  .servicio:active{transform:scale(.97);}
+  .servicio.activo{background:var(--verde);color:var(--blanco);border-color:var(--verde);}
+
+  /* ---- Horas ---- */
+  .horas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .hora{
+    background:var(--blanco);border:2px solid var(--borde);border-radius:14px;
+    padding:18px 4px;min-height:60px;
+    font-family:inherit;font-size:18px;font-weight:600;color:var(--texto);
+    font-variant-numeric:tabular-nums;cursor:pointer;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .hora:active:not(:disabled){transform:scale(.96);}
+  .hora.activo{background:var(--verde);color:var(--blanco);border-color:var(--verde);}
+  .hora:disabled{
+    background:var(--verde-suave);border-color:var(--verde-suave);
+    color:#A9BEB4;text-decoration:line-through;cursor:not-allowed;
+  }
+  .nota-horas{margin-top:12px;font-size:14px;color:var(--gris-texto);}
+
+  /* ---- Campos ---- */
+  .campo{
+    width:100%;background:var(--verde-suave);border:2px solid var(--verde-suave);
+    border-radius:var(--radio);padding:20px 22px;min-height:64px;
+    font-family:inherit;font-size:19px;font-weight:500;color:var(--texto);outline:none;
+    transition:border-color .15s, background .15s;
+  }
+  .campo::placeholder{color:#8FA79B;font-weight:400;}
+  .campo:focus{border-color:var(--verde);background:var(--blanco);}
+  .confidencial{
+    display:flex;align-items:center;gap:8px;
+    margin-top:14px;font-size:14px;color:var(--gris-texto);
+  }
+
+  /* ---- Botón principal ---- */
+  .barra-reservar{
+    position:fixed;left:0;right:0;bottom:0;z-index:10;
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, var(--blanco) 70%, rgba(255,255,255,0));
+    display:flex;justify-content:center;
+  }
+  @media(min-width:520px){.barra-reservar{position:sticky;margin:0 -20px;}}
+  .btn-reservar{
+    width:100%;max-width:440px;
+    background:var(--verde);color:var(--blanco);
+    border:none;border-radius:var(--radio);padding:22px;min-height:68px;
+    font-family:inherit;font-size:20px;font-weight:700;letter-spacing:.01em;cursor:pointer;
+    box-shadow:0 10px 28px rgba(20,80,59,.28);
+    transition:background .2s, transform .1s;
+  }
+  .btn-reservar:active:not(:disabled){transform:scale(.985);background:var(--verde-oscuro);}
+  .btn-reservar:disabled{background:#CFE0D8;color:#8FA79B;box-shadow:none;cursor:not-allowed;}
+
+  button:focus-visible,.campo:focus-visible,a:focus-visible{
+    outline:3px solid var(--verde);outline-offset:3px;
+  }
+
+  /* ---- Confirmación ---- */
+  .confirmacion{display:none;text-align:center;padding:48px 0 30px;}
+  .confirmacion.visible{display:block;animation:aparecer .45s ease both;}
+  @keyframes aparecer{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  .check{
+    width:96px;height:96px;margin:0 auto 22px;
+    background:var(--verde);color:var(--blanco);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .check svg{width:46px;height:46px;}
+  .check svg path{stroke-dasharray:60;stroke-dashoffset:60;animation:trazo .5s .25s ease-out forwards;}
+  @keyframes trazo{to{stroke-dashoffset:0;}}
+  .confirmacion h2{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--verde-oscuro);}
+  .conf-sub{color:var(--gris-texto);margin-top:6px;font-size:16px;}
+  .resumen{margin:28px 0;text-align:left;background:var(--verde-suave);border-radius:20px;padding:8px 24px;}
+  .resumen-fila{
+    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+    padding:16px 0;border-bottom:1px solid var(--borde);
+  }
+  .resumen-fila:last-child{border-bottom:none;}
+  .resumen-fila dt{color:var(--gris-texto);font-size:15px;flex:none;}
+  .resumen-fila dd{font-weight:700;font-size:17px;text-align:right;}
+  .acciones{display:flex;flex-direction:column;gap:14px;}
+  .btn-accion{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;min-height:64px;padding:18px;border-radius:var(--radio);
+    font-family:inherit;font-size:18px;font-weight:700;text-decoration:none;cursor:pointer;
+    transition:transform .1s;
+  }
+  .btn-accion:active{transform:scale(.98);}
+  .btn-calendario{background:var(--verde);color:var(--blanco);border:none;}
+  .btn-whatsapp{background:var(--blanco);color:var(--verde-oscuro);border:2px solid var(--verde);}
+  .btn-accion .icono{font-size:22px;}
+  .nueva-reserva{
+    display:inline-block;margin-top:26px;background:none;border:none;cursor:pointer;
+    font-family:inherit;font-size:16px;font-weight:600;color:var(--gris-texto);
+    text-decoration:underline;text-underline-offset:4px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="banda" aria-hidden="true"></div>
+
+  <!-- ================= FORMULARIO ================= -->
+  <main id="reserva">
+    <header>
+      <div class="logo" aria-hidden="true">🌿</div>
+      <h1>Psicocentro</h1>
+      <p class="lema">Agenda tu cita en menos de 20 segundos.</p>
+      <span class="fecha-hoy" id="fechaHoy"></span>
+    </header>
+
+    <!-- Paso 1 -->
+    <section class="paso" id="paso1">
+      <h2 class="paso-titulo"><span class="paso-num">1</span>¿Qué tipo de consulta necesitas?</h2>
+      <div class="servicios" role="radiogroup" aria-label="Tipo de consulta">
+        <button type="button" class="servicio" data-servicio="Terapia individual" role="radio" aria-checked="false">
+          <span class="icono" aria-hidden="true">💬</span>Terapia individual
+        </button>
+        <button type="button" class="servicio" data-servicio="Terapia de pareja" role="radio" aria-checked="false">
+          <span class="icono" aria-hidden="true">💞</span>Terapia de pareja
+        </button>
+        <button type="button" class="servicio" data-servicio="Niños y adolescentes" role="radio" aria-checked="false">
+          <span class="icono" aria-hidden="true">🧸</span>Niños y adolescentes
+        </button>
+        <button type="button" class="servicio" data-servicio="Primera consulta" role="radio" aria-checked="false">
+          <span class="icono" aria-hidden="true">🌱</span>Primera consulta
+        </button>
+      </div>
+    </section>
+
+    <!-- Paso 2 -->
+    <section class="paso" id="paso2">
+      <h2 class="paso-titulo"><span class="paso-num">2</span>Selecciona la hora</h2>
+      <div class="horas" role="radiogroup" aria-label="Hora disponible">
+        <button type="button" class="hora" data-hora="09:00" role="radio" aria-checked="false">09:00</button>
+        <button type="button" class="hora" data-hora="10:00" role="radio" aria-checked="false">10:00</button>
+        <button type="button" class="hora" disabled aria-label="11:00 ocupada">11:00</button>
+        <button type="button" class="hora" data-hora="12:00" role="radio" aria-checked="false">12:00</button>
+        <button type="button" class="hora" data-hora="16:00" role="radio" aria-checked="false">16:00</button>
+        <button type="button" class="hora" disabled aria-label="17:00 ocupada">17:00</button>
+        <button type="button" class="hora" data-hora="18:00" role="radio" aria-checked="false">18:00</button>
+      </div>
+      <p class="nota-horas">Cada sesión dura 50 minutos. Las horas tachadas ya están ocupadas.</p>
+    </section>
+
+    <!-- Paso 3 -->
+    <section class="paso" id="paso3">
+      <h2 class="paso-titulo"><span class="paso-num">3</span>¿Cómo te llamas?</h2>
+      <input class="campo" id="nombre" type="text" autocomplete="name"
+             placeholder="Tu nombre" aria-label="Tu nombre" enterkeyhint="next">
+    </section>
+
+    <!-- Paso 4 -->
+    <section class="paso" id="paso4">
+      <h2 class="paso-titulo"><span class="paso-num">4</span>Tu teléfono</h2>
+      <input class="campo" id="telefono" type="tel" inputmode="numeric" autocomplete="tel"
+             placeholder="Ej. 555 123 4567" aria-label="Tu teléfono" enterkeyhint="done">
+      <p class="confidencial"><span aria-hidden="true">🔒</span>Tu información es confidencial y solo la verá tu psicóloga.</p>
+    </section>
+  </main>
+
+  <!-- ================= CONFIRMACIÓN ================= -->
+  <section class="confirmacion" id="confirmacion" aria-live="polite">
+    <div class="check" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M10 25 L20 35 L38 14" stroke="#FFFFFF" stroke-width="5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>¡Tu cita ha sido agendada!</h2>
+    <p class="conf-sub">Te esperamos. Llega 5 minutos antes de tu sesión.</p>
+
+    <dl class="resumen">
+      <div class="resumen-fila"><dt>Consulta</dt><dd id="rServicio"></dd></div>
+      <div class="resumen-fila"><dt>Fecha</dt><dd id="rFecha"></dd></div>
+      <div class="resumen-fila"><dt>Hora</dt><dd id="rHora"></dd></div>
+      <div class="resumen-fila"><dt>Nombre</dt><dd id="rNombre"></dd></div>
+      <div class="resumen-fila"><dt>Atiende</dt><dd id="rProfesional"></dd></div>
+    </dl>
+
+    <div class="acciones">
+      <a class="btn-accion btn-calendario" id="btnCalendario" download="cita-psicocentro.ics">
+        <span class="icono" aria-hidden="true">📅</span>Agregar al calendario
+      </a>
+      <a class="btn-accion btn-whatsapp" id="btnWhatsapp" target="_blank" rel="noopener">
+        <span class="icono" aria-hidden="true">💬</span>Abrir WhatsApp
+      </a>
+    </div>
+
+    <button type="button" class="nueva-reserva" id="btnNueva">Agendar otra cita</button>
+  </section>
+
+  <!-- Botón principal -->
+  <div class="barra-reservar" id="barraReservar">
+    <button type="button" class="btn-reservar" id="btnReservar" disabled>Agendar cita</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------- Configuración de Psicocentro ----------
+  var TELEFONO_PSICOCENTRO = "5215512345678"; // Cambiar por el WhatsApp real (código de país + número, sin +)
+  var PROFESIONAL = "Psic. Laura Mendoza";     // Nombre de la psicóloga
+  var DURACION_MIN = 50;                       // Duración de la sesión
+
+  var estado = { servicio:null, hora:null };
+
+  var hoy = new Date();
+  var fechaLarga = hoy.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+  fechaLarga = fechaLarga.charAt(0).toUpperCase()+fechaLarga.slice(1);
+  document.getElementById("fechaHoy").textContent = "Hoy · " + fechaLarga;
+
+  var nombre = document.getElementById("nombre");
+  var telefono = document.getElementById("telefono");
+  var btnReservar = document.getElementById("btnReservar");
+
+  function seleccionar(grupo, boton, clave){
+    grupo.forEach(function(b){
+      b.classList.remove("activo");
+      b.setAttribute("aria-checked","false");
+    });
+    boton.classList.add("activo");
+    boton.setAttribute("aria-checked","true");
+    estado[clave] = boton.dataset[clave];
+    actualizar();
+  }
+
+  var servicios = Array.prototype.slice.call(document.querySelectorAll(".servicio"));
+  servicios.forEach(function(b){
+    b.addEventListener("click",function(){
+      seleccionar(servicios,b,"servicio");
+      document.getElementById("paso2").scrollIntoView({behavior:"smooth",block:"start"});
+    });
+  });
+
+  var horas = Array.prototype.slice.call(document.querySelectorAll(".hora:not(:disabled)"));
+  horas.forEach(function(b){
+    b.addEventListener("click",function(){
+      seleccionar(horas,b,"hora");
+      document.getElementById("paso3").scrollIntoView({behavior:"smooth",block:"start"});
+      nombre.focus({preventScroll:true});
+    });
+  });
+
+  nombre.addEventListener("input",actualizar);
+  telefono.addEventListener("input",function(){
+    telefono.value = telefono.value.replace(/[^\d\s+()-]/g,"");
+    actualizar();
+  });
+  nombre.addEventListener("keydown",function(e){ if(e.key==="Enter") telefono.focus(); });
+
+  function completo(){
+    return estado.servicio && estado.hora &&
+           nombre.value.trim().length>=2 &&
+           telefono.value.replace(/\D/g,"").length>=7;
+  }
+
+  function actualizar(){
+    marcarPaso("paso1", !!estado.servicio);
+    marcarPaso("paso2", !!estado.hora);
+    marcarPaso("paso3", nombre.value.trim().length>=2);
+    marcarPaso("paso4", telefono.value.replace(/\D/g,"").length>=7);
+    btnReservar.disabled = !completo();
+  }
+  function marcarPaso(id, listo){
+    var p = document.getElementById(id);
+    if(listo){ p.classList.add("listo"); p.querySelector(".paso-num").textContent="✓"; }
+    else{
+      p.classList.remove("listo");
+      p.querySelector(".paso-num").textContent = id.replace("paso","");
+    }
+  }
+
+  function horaAmPm(h24){
+    var partes = h24.split(":");
+    var h = parseInt(partes[0],10);
+    var sufijo = h>=12 ? "PM" : "AM";
+    var h12 = h%12; if(h12===0) h12=12;
+    return h12+":"+partes[1]+" "+sufijo;
+  }
+
+  btnReservar.addEventListener("click",function(){
+    if(!completo()) return;
+    var nombreVal = nombre.value.trim();
+    var horaTxt = horaAmPm(estado.hora);
+
+    document.getElementById("rServicio").textContent = estado.servicio;
+    document.getElementById("rFecha").textContent = fechaLarga;
+    document.getElementById("rHora").textContent = horaTxt;
+    document.getElementById("rNombre").textContent = nombreVal;
+    document.getElementById("rProfesional").textContent = PROFESIONAL;
+
+    // WhatsApp con mensaje ya escrito
+    var msg = "Hola.\nAcabo de agendar una cita en Psicocentro.\nNombre: "+nombreVal+
+              "\nConsulta: "+estado.servicio+"\nHora: "+horaTxt+"\nNos vemos ese día.";
+    document.getElementById("btnWhatsapp").href =
+      "https://wa.me/"+TELEFONO_PSICOCENTRO+"?text="+encodeURIComponent(msg);
+
+    // Archivo de calendario (.ics) — sesión de 50 minutos
+    var ini = new Date(hoy);
+    ini.setHours(parseInt(estado.hora.split(":")[0],10),
+                 parseInt(estado.hora.split(":")[1],10),0,0);
+    var fin = new Date(ini.getTime()+DURACION_MIN*60000);
+    function fIcs(d){
+      function p(n){return (n<10?"0":"")+n;}
+      return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"T"+
+             p(d.getHours())+p(d.getMinutes())+"00";
+    }
+    var ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Psicocentro//ES\r\n"+
+      "BEGIN:VEVENT\r\nUID:"+Date.now()+"@psicocentro\r\nDTSTART:"+fIcs(ini)+
+      "\r\nDTEND:"+fIcs(fin)+"\r\nSUMMARY:Cita en Psicocentro — "+estado.servicio+
+      "\r\nDESCRIPTION:Atiende: "+PROFESIONAL+"\r\nEND:VEVENT\r\nEND:VCALENDAR";
+    document.getElementById("btnCalendario").href =
+      "data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
+
+    document.getElementById("reserva").style.display="none";
+    document.getElementById("barraReservar").style.display="none";
+    document.getElementById("confirmacion").classList.add("visible");
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  document.getElementById("btnNueva").addEventListener("click",function(){
+    estado = {servicio:null,hora:null};
+    nombre.value=""; telefono.value="";
+    document.querySelectorAll(".activo").forEach(function(b){
+      b.classList.remove("activo"); b.setAttribute("aria-checked","false");
+    });
+    actualizar();
+    document.getElementById("confirmacion").classList.remove("visible");
+    document.getElementById("reserva").style.display="";
+    document.getElementById("barraReservar").style.display="";
+    window.scrollTo({top:0});
+  });
+})();
+</script>
+</body>
+</html>
