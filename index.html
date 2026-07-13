@@ -306,9 +306,9 @@
   var TELEFONO_PSICOCENTRO = "18492675893";    // WhatsApp real de la psicóloga (código de país + número, sin +)
   var PROFESIONAL = "Psic. Laura Mendoza";     // Nombre de la psicóloga
   var DURACION_MIN = 50;                       // Duración de la sesión
-  // URL del Google Apps Script publicado (ver instrucciones de despliegue).
-  // Mientras diga "PEGA_AQUI..." el aviso por correo/calendario a la psicóloga queda desactivado sin romper el sitio.
-  var URL_APPS_SCRIPT = "PEGA_AQUI_LA_URL_DE_TU_APPS_SCRIPT";
+  // URL del Google Apps Script publicado: envía correo + crea el evento en el
+  // Google Calendar de la psicóloga por cada cita agendada.
+  var URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbzJvku-S6GKCfDwIkjj2FRGv7YOtwuHn1Zl-GHG3aDPWKZs7j1tJdrWSndKlBm-E6KB/exec";
 
   var estado = { servicio:null, hora:null };
 
