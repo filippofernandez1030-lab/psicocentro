@@ -171,7 +171,9 @@
   }
   .btn-accion:active{transform:scale(.98);}
   .btn-calendario{background:var(--verde);color:var(--blanco);border:none;}
+  .btn-google{background:var(--blanco);color:#3367D6;border:2px solid #4285F4;}
   .btn-whatsapp{background:var(--blanco);color:var(--verde-oscuro);border:2px solid var(--verde);}
+  .btn-whatsapp.enviado{background:var(--verde-suave);color:var(--verde-oscuro);border-color:var(--verde-suave);cursor:default;}
   .btn-accion .icono{font-size:22px;}
   .nueva-reserva{
     display:inline-block;margin-top:26px;background:none;border:none;cursor:pointer;
@@ -281,8 +283,11 @@
       <a class="btn-accion btn-calendario" id="btnCalendario" download="cita-psicocentro.ics">
         <span class="icono" aria-hidden="true">📅</span>Agregar al calendario
       </a>
+      <a class="btn-accion btn-google" id="btnGoogleCalendar" target="_blank" rel="noopener">
+        <span class="icono" aria-hidden="true">📆</span>Guardar en Google Calendar
+      </a>
       <a class="btn-accion btn-whatsapp" id="btnWhatsapp" target="_blank" rel="noopener">
-        <span class="icono" aria-hidden="true">💬</span>Abrir WhatsApp
+        <span class="icono" aria-hidden="true">💬</span>Avisar a tu psicóloga por WhatsApp
       </a>
     </div>
 
@@ -298,9 +303,12 @@
 <script>
 (function(){
   // ---------- Configuración de Psicocentro ----------
-  var TELEFONO_PSICOCENTRO = "5215512345678"; // Cambiar por el WhatsApp real (código de país + número, sin +)
+  var TELEFONO_PSICOCENTRO = "18492675893";    // WhatsApp real de la psicóloga (código de país + número, sin +)
   var PROFESIONAL = "Psic. Laura Mendoza";     // Nombre de la psicóloga
   var DURACION_MIN = 50;                       // Duración de la sesión
+  // URL del Google Apps Script publicado (ver instrucciones de despliegue).
+  // Mientras diga "PEGA_AQUI..." el aviso por correo/calendario a la psicóloga queda desactivado sin romper el sitio.
+  var URL_APPS_SCRIPT = "PEGA_AQUI_LA_URL_DE_TU_APPS_SCRIPT";
 
   var estado = { servicio:null, hora:null };
 
@@ -347,6 +355,15 @@
     actualizar();
   });
   nombre.addEventListener("keydown",function(e){ if(e.key==="Enter") telefono.focus(); });
+
+  // Botón de WhatsApp: al hacer clic se abre el chat con la psicóloga y el botón cambia
+  // de estado para confirmarle visualmente al cliente que el aviso se está enviando.
+  var HTML_WHATSAPP_INICIAL = document.getElementById("btnWhatsapp").innerHTML;
+  document.getElementById("btnWhatsapp").addEventListener("click",function(){
+    var btn = this;
+    btn.classList.add("enviado");
+    btn.innerHTML = '<span class="icono" aria-hidden="true">✅</span>Aviso enviado a tu psicóloga';
+  });
 
   function completo(){
     return estado.servicio && estado.hora &&
@@ -412,6 +429,32 @@
     document.getElementById("btnCalendario").href =
       "data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
 
+    // Enlace "Guardar en Google Calendar" para el cliente (el confirma con un clic, sin iniciar sesión de nuestro lado)
+    var zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Santo_Domingo";
+    var gcalUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE"
+      + "&text=" + encodeURIComponent("Cita en Psicocentro — " + estado.servicio)
+      + "&dates=" + fIcs(ini) + "/" + fIcs(fin)
+      + "&ctz=" + encodeURIComponent(zonaHoraria)
+      + "&details=" + encodeURIComponent("Atiende: " + PROFESIONAL + "\nPaciente: " + nombreVal)
+      + "&location=" + encodeURIComponent("Psicocentro");
+    document.getElementById("btnGoogleCalendar").href = gcalUrl;
+
+    // Aviso automático a la psicóloga: correo + evento en su Google Calendar (vía Google Apps Script)
+    if (URL_APPS_SCRIPT.indexOf("http") === 0) {
+      fetch(URL_APPS_SCRIPT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          servicio: estado.servicio,
+          fecha: ini.getFullYear() + "-" + String(ini.getMonth()+1).padStart(2,"0") + "-" + String(ini.getDate()).padStart(2,"0"),
+          hora: estado.hora,
+          nombre: nombreVal,
+          telefono: telefono.value.trim()
+        })
+      }).catch(function(){ /* si falla, no interrumpe la reserva del cliente */ });
+    }
+
     document.getElementById("reserva").style.display="none";
     document.getElementById("barraReservar").style.display="none";
     document.getElementById("confirmacion").classList.add("visible");
@@ -421,6 +464,9 @@
   document.getElementById("btnNueva").addEventListener("click",function(){
     estado = {servicio:null,hora:null};
     nombre.value=""; telefono.value="";
+    var btnWa = document.getElementById("btnWhatsapp");
+    btnWa.classList.remove("enviado");
+    btnWa.innerHTML = HTML_WHATSAPP_INICIAL;
     document.querySelectorAll(".activo").forEach(function(b){
       b.classList.remove("activo"); b.setAttribute("aria-checked","false");
     });
