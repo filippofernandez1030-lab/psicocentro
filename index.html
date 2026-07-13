@@ -82,9 +82,16 @@
     cursor:pointer;min-height:118px;text-align:center;
     transition:border-color .15s, background .15s, transform .1s;
   }
-  .servicio .icono{font-size:34px;line-height:1;}
+  .servicio .icono{
+    width:36px;height:36px;border-radius:50%;flex:none;
+    background:var(--verde-suave);color:var(--verde);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;
+    transition:background .15s,color .15s;
+  }
   .servicio:active{transform:scale(.97);}
   .servicio.activo{background:var(--verde);color:var(--blanco);border-color:var(--verde);}
+  .servicio.activo .icono{background:rgba(255,255,255,.22);color:var(--blanco);}
 
   /* ---- Horas ---- */
   .horas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
@@ -200,60 +207,71 @@
       <h2 class="paso-titulo"><span class="paso-num">1</span>¿Qué tipo de consulta necesitas?</h2>
       <div class="servicios" role="radiogroup" aria-label="Tipo de consulta">
         <button type="button" class="servicio" data-servicio="Terapia Individual" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">🧠</span>Terapia Individual
+          <span class="icono" aria-hidden="true">01</span>Terapia Individual
         </button>
         <button type="button" class="servicio" data-servicio="Terapia de Pareja" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">💞</span>Terapia de Pareja
+          <span class="icono" aria-hidden="true">02</span>Terapia de Pareja
         </button>
         <button type="button" class="servicio" data-servicio="Terapia Familiar" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">👨‍👩‍👧‍👦</span>Terapia Familiar
+          <span class="icono" aria-hidden="true">03</span>Terapia Familiar
         </button>
         <button type="button" class="servicio" data-servicio="Terapia Infantil y Juvenil" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">🧸</span>Terapia Infantil y Juvenil
+          <span class="icono" aria-hidden="true">04</span>Terapia Infantil y Juvenil
         </button>
         <button type="button" class="servicio" data-servicio="Evaluaciones Psicológicas" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">📋</span>Evaluaciones Psicológicas
+          <span class="icono" aria-hidden="true">05</span>Evaluaciones Psicológicas
         </button>
         <button type="button" class="servicio" data-servicio="Terapia Cognitivo Conductual" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">🔄</span>Terapia Cognitivo Conductual
+          <span class="icono" aria-hidden="true">06</span>Terapia Cognitivo Conductual
         </button>
         <button type="button" class="servicio" data-servicio="Terapia de Duelo" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">🕊️</span>Terapia de Duelo
+          <span class="icono" aria-hidden="true">07</span>Terapia de Duelo
         </button>
         <button type="button" class="servicio" data-servicio="Terapias de Tercera Generación" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">🌿</span>Terapias de Tercera Generación
+          <span class="icono" aria-hidden="true">08</span>Terapias de Tercera Generación
         </button>
         <button type="button" class="servicio" data-servicio="Terapia Afirmativa LGTB+" role="radio" aria-checked="false">
-          <span class="icono" aria-hidden="true">🏳️‍🌈</span>Terapia Afirmativa LGTB+
+          <span class="icono" aria-hidden="true">09</span>Terapia Afirmativa LGTB+
         </button>
       </div>
     </section>
 
     <!-- Paso 2 -->
     <section class="paso" id="paso2">
-      <h2 class="paso-titulo"><span class="paso-num">2</span>Selecciona la hora</h2>
-      <div class="horas" role="radiogroup" aria-label="Hora disponible">
-        <button type="button" class="hora" data-hora="09:00" role="radio" aria-checked="false">09:00</button>
-        <button type="button" class="hora" data-hora="10:00" role="radio" aria-checked="false">10:00</button>
-        <button type="button" class="hora" disabled aria-label="11:00 ocupada">11:00</button>
-        <button type="button" class="hora" data-hora="12:00" role="radio" aria-checked="false">12:00</button>
-        <button type="button" class="hora" data-hora="16:00" role="radio" aria-checked="false">16:00</button>
-        <button type="button" class="hora" disabled aria-label="17:00 ocupada">17:00</button>
-        <button type="button" class="hora" data-hora="18:00" role="radio" aria-checked="false">18:00</button>
-      </div>
-      <p class="nota-horas">Cada sesión dura 50 minutos. Las horas tachadas ya están ocupadas.</p>
+      <h2 class="paso-titulo"><span class="paso-num">2</span>¿Qué día prefieres?</h2>
+      <input class="campo" id="fecha" type="date" aria-label="Fecha de la cita">
+      <p class="nota-horas">Puedes agendar para hoy, otro día o cualquier semana futura.</p>
     </section>
 
     <!-- Paso 3 -->
     <section class="paso" id="paso3">
-      <h2 class="paso-titulo"><span class="paso-num">3</span>¿Cómo te llamas?</h2>
-      <input class="campo" id="nombre" type="text" autocomplete="name"
-             placeholder="Tu nombre" aria-label="Tu nombre" enterkeyhint="next">
+      <h2 class="paso-titulo"><span class="paso-num">3</span>Selecciona la hora</h2>
+      <div class="horas" role="radiogroup" aria-label="Hora disponible">
+        <button type="button" class="hora" data-hora="09:00" role="radio" aria-checked="false">09:00</button>
+        <button type="button" class="hora" data-hora="10:00" role="radio" aria-checked="false">10:00</button>
+        <button type="button" class="hora" data-hora="11:00" role="radio" aria-checked="false">11:00</button>
+        <button type="button" class="hora" data-hora="12:00" role="radio" aria-checked="false">12:00</button>
+        <button type="button" class="hora" data-hora="13:00" role="radio" aria-checked="false">13:00</button>
+        <button type="button" class="hora" data-hora="14:00" role="radio" aria-checked="false">14:00</button>
+        <button type="button" class="hora" data-hora="15:00" role="radio" aria-checked="false">15:00</button>
+        <button type="button" class="hora" data-hora="16:00" role="radio" aria-checked="false">16:00</button>
+        <button type="button" class="hora" data-hora="17:00" role="radio" aria-checked="false">17:00</button>
+        <button type="button" class="hora" data-hora="18:00" role="radio" aria-checked="false">18:00</button>
+        <button type="button" class="hora" data-hora="19:00" role="radio" aria-checked="false">19:00</button>
+      </div>
+      <p class="nota-horas">Horario de 9:00 a.m. a 7:00 p.m. Cada sesión dura 60 minutos. Si eliges hoy, las horas que ya pasaron se deshabilitan.</p>
     </section>
 
     <!-- Paso 4 -->
     <section class="paso" id="paso4">
-      <h2 class="paso-titulo"><span class="paso-num">4</span>Tu teléfono</h2>
+      <h2 class="paso-titulo"><span class="paso-num">4</span>¿Cómo te llamas?</h2>
+      <input class="campo" id="nombre" type="text" autocomplete="name"
+             placeholder="Tu nombre" aria-label="Tu nombre" enterkeyhint="next">
+    </section>
+
+    <!-- Paso 5 -->
+    <section class="paso" id="paso5">
+      <h2 class="paso-titulo"><span class="paso-num">5</span>Tu teléfono</h2>
       <input class="campo" id="telefono" type="tel" inputmode="numeric" autocomplete="tel"
              placeholder="Ej. 555 123 4567" aria-label="Tu teléfono" enterkeyhint="done">
       <p class="confidencial"><span aria-hidden="true">🔒</span>Tu información es confidencial y solo la verá tu psicóloga.</p>
@@ -305,21 +323,34 @@
   // ---------- Configuración de Psicocentro ----------
   var TELEFONO_PSICOCENTRO = "18492675893";    // WhatsApp real de la psicóloga (código de país + número, sin +)
   var PROFESIONAL = "Psic. Laura Mendoza";     // Nombre de la psicóloga
-  var DURACION_MIN = 50;                       // Duración de la sesión
+  var DURACION_MIN = 60;                       // Duración de la sesión
   // URL del Google Apps Script publicado: envía correo + crea el evento en el
   // Google Calendar de la psicóloga por cada cita agendada.
   var URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbzJvku-S6GKCfDwIkjj2FRGv7YOtwuHn1Zl-GHG3aDPWKZs7j1tJdrWSndKlBm-E6KB/exec";
 
   var estado = { servicio:null, hora:null };
 
+  function p(n){ return (n<10?"0":"")+n; }
+  function valorInputFecha(d){ return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
+  function fechaDesdeInput(valor){
+    var partes = valor.split("-");
+    return new Date(parseInt(partes[0],10), parseInt(partes[1],10)-1, parseInt(partes[2],10));
+  }
+  function formatoLargo(d){
+    var s = d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+    return s.charAt(0).toUpperCase()+s.slice(1);
+  }
+
   var hoy = new Date();
-  var fechaLarga = hoy.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
-  fechaLarga = fechaLarga.charAt(0).toUpperCase()+fechaLarga.slice(1);
-  document.getElementById("fechaHoy").textContent = "Hoy · " + fechaLarga;
+  document.getElementById("fechaHoy").textContent = "Hoy · " + formatoLargo(hoy);
 
   var nombre = document.getElementById("nombre");
   var telefono = document.getElementById("telefono");
+  var fechaInput = document.getElementById("fecha");
   var btnReservar = document.getElementById("btnReservar");
+
+  fechaInput.min = valorInputFecha(hoy);
+  fechaInput.value = valorInputFecha(hoy);
 
   function seleccionar(grupo, boton, clave){
     grupo.forEach(function(b){
@@ -340,11 +371,34 @@
     });
   });
 
-  var horas = Array.prototype.slice.call(document.querySelectorAll(".hora:not(:disabled)"));
+  var horas = Array.prototype.slice.call(document.querySelectorAll(".hora"));
+
+  // Si la fecha elegida es hoy, deshabilita las horas que ya pasaron.
+  function actualizarDisponibilidadHoras(){
+    var esHoy = fechaInput.value === valorInputFecha(hoy);
+    var horaActual = p(hoy.getHours())+":"+p(hoy.getMinutes());
+    horas.forEach(function(b){
+      var yaPaso = esHoy && b.dataset.hora <= horaActual;
+      b.disabled = yaPaso;
+      if(yaPaso && b.classList.contains("activo")){
+        b.classList.remove("activo");
+        b.setAttribute("aria-checked","false");
+        estado.hora = null;
+      }
+    });
+  }
+  actualizarDisponibilidadHoras();
+
+  fechaInput.addEventListener("change",function(){
+    actualizarDisponibilidadHoras();
+    actualizar();
+    document.getElementById("paso3").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
   horas.forEach(function(b){
     b.addEventListener("click",function(){
       seleccionar(horas,b,"hora");
-      document.getElementById("paso3").scrollIntoView({behavior:"smooth",block:"start"});
+      document.getElementById("paso4").scrollIntoView({behavior:"smooth",block:"start"});
       nombre.focus({preventScroll:true});
     });
   });
@@ -366,16 +420,17 @@
   });
 
   function completo(){
-    return estado.servicio && estado.hora &&
+    return estado.servicio && fechaInput.value && estado.hora &&
            nombre.value.trim().length>=2 &&
            telefono.value.replace(/\D/g,"").length>=7;
   }
 
   function actualizar(){
     marcarPaso("paso1", !!estado.servicio);
-    marcarPaso("paso2", !!estado.hora);
-    marcarPaso("paso3", nombre.value.trim().length>=2);
-    marcarPaso("paso4", telefono.value.replace(/\D/g,"").length>=7);
+    marcarPaso("paso2", !!fechaInput.value);
+    marcarPaso("paso3", !!estado.hora);
+    marcarPaso("paso4", nombre.value.trim().length>=2);
+    marcarPaso("paso5", telefono.value.replace(/\D/g,"").length>=7);
     btnReservar.disabled = !completo();
   }
   function marcarPaso(id, listo){
@@ -399,26 +454,27 @@
     if(!completo()) return;
     var nombreVal = nombre.value.trim();
     var horaTxt = horaAmPm(estado.hora);
+    var fechaSel = fechaDesdeInput(fechaInput.value);
+    var fechaLargaSel = formatoLargo(fechaSel);
 
     document.getElementById("rServicio").textContent = estado.servicio;
-    document.getElementById("rFecha").textContent = fechaLarga;
+    document.getElementById("rFecha").textContent = fechaLargaSel;
     document.getElementById("rHora").textContent = horaTxt;
     document.getElementById("rNombre").textContent = nombreVal;
     document.getElementById("rProfesional").textContent = PROFESIONAL;
 
     // WhatsApp con mensaje ya escrito
     var msg = "Hola.\nAcabo de agendar una cita en Psicocentro.\nNombre: "+nombreVal+
-              "\nConsulta: "+estado.servicio+"\nHora: "+horaTxt+"\nNos vemos ese día.";
+              "\nConsulta: "+estado.servicio+"\nFecha: "+fechaLargaSel+"\nHora: "+horaTxt+"\nNos vemos ese día.";
     document.getElementById("btnWhatsapp").href =
       "https://wa.me/"+TELEFONO_PSICOCENTRO+"?text="+encodeURIComponent(msg);
 
-    // Archivo de calendario (.ics) — sesión de 50 minutos
-    var ini = new Date(hoy);
+    // Archivo de calendario (.ics) — sesión de 60 minutos
+    var ini = new Date(fechaSel);
     ini.setHours(parseInt(estado.hora.split(":")[0],10),
                  parseInt(estado.hora.split(":")[1],10),0,0);
     var fin = new Date(ini.getTime()+DURACION_MIN*60000);
     function fIcs(d){
-      function p(n){return (n<10?"0":"")+n;}
       return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"T"+
              p(d.getHours())+p(d.getMinutes())+"00";
     }
@@ -464,6 +520,8 @@
   document.getElementById("btnNueva").addEventListener("click",function(){
     estado = {servicio:null,hora:null};
     nombre.value=""; telefono.value="";
+    fechaInput.value = valorInputFecha(hoy);
+    actualizarDisponibilidadHoras();
     var btnWa = document.getElementById("btnWhatsapp");
     btnWa.classList.remove("enviado");
     btnWa.innerHTML = HTML_WHATSAPP_INICIAL;
